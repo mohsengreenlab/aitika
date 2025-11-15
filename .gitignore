@@ -1,3 +1,8 @@
+# Docker
+postgres_data
+pgadmin_data
+redis_data
+
 # compiled output
 /dist
 /node_modules
