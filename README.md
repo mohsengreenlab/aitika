@@ -1,4 +1,4 @@
-# Aitka Backend
+# Aitika Backend
 
 ## Project setup
 

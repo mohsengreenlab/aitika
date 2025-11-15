@@ -1,4 +1,4 @@
-name: 'aitka_pi_test'
+name: 'aitika_pi_test'
 
 services:
   postgres:

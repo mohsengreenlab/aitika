@@ -34,8 +34,8 @@ async function bootstrap() {
   // Swagger setup
   // ----------------------
   const config = new DocumentBuilder()
-    .setTitle('Aitka API')
-    .setDescription('Aitka NestJS backend API')
+    .setTitle('Aitika API')
+    .setDescription('Aitika NestJS backend API')
     .setVersion('1.0')
     // .addBearerAuth() // Optional JWT auth
     .build();

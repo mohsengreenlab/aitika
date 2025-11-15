@@ -1,4 +1,4 @@
-name: 'aitka_api_dev'
+name: 'aitika_api_dev'
 
 services:
   postgres:
