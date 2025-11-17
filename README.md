@@ -45,6 +45,14 @@ or the raw Docker Compose command:
 $ docker compose -f docker-compose.dev.yaml up -d --build
 ```
 
+You will get pgAdmin at `PG_ADMIN_PORT`, and postgreSql at `DB_PORT`.
+Hardcoded credentials for pgAdmin in (only used in dev):
+
+```
+PGADMIN_DEFAULT_EMAIL: admin@example.com
+PGADMIN_DEFAULT_PASSWORD: adminpass
+```
+
 ## Compile and run the project
 
 ```bash
