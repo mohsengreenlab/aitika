@@ -1,4 +1,4 @@
-name: 'aitika_pi_test'
+name: 'aitika_api_test'
 
 services:
   postgres:
@@ -11,10 +11,10 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
 
-  redis:
-    image: redis
-    container_name: redis_test
-    ports:
-      - '${REDIS_PORT}:6379'
+  # redis:
+  #   image: redis
+  #   container_name: redis_test
+  #   ports:
+  #     - '${REDIS_PORT}:6379'
 
 

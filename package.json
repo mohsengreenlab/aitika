@@ -6,6 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "devdockerup": "docker compose -f docker-compose.dev.yaml up -d",
+    "devdockerdown": "docker compose -f docker-compose.dev.yaml down --remove-orphans",
+    "testdockerup": "docker compose -f docker-compose.test.yaml up -d",
+    "testdockerdown": "docker compose -f docker-compose.test.yaml down -v --remove-orphans",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

@@ -25,19 +25,19 @@ services:
       volumes:
         - ./pgadmin_data:/var/lib/pgadmin
 
-  redis:
-    image: redis
-    container_name: redis_dev
-    ports:
-      - '${REDIS_PORT}:6379'
-    volumes:
-      - ./redis_data:/data
+  # redis:
+  #   image: redis
+  #   container_name: redis_dev
+  #   ports:
+  #     - '${REDIS_PORT}:6379'
+  #   volumes:
+  #     - ./redis_data:/data
 
-  redis-insight:
-    image: redis/redisinsight
-    container_name: redis-ui
-    restart: always
-    ports:
-      - '${REDIS_UI_PORT}:5540'
-    depends_on:
-      - redis
+  # redis-insight:
+  #   image: redis/redisinsight
+  #   container_name: redis-ui
+  #   restart: always
+  #   ports:
+  #     - '${REDIS_UI_PORT}:5540'
+  #   depends_on:
+  #     - redis
