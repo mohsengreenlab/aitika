@@ -53,6 +53,21 @@ PGADMIN_DEFAULT_EMAIL: admin@example.com
 PGADMIN_DEFAULT_PASSWORD: adminpass
 ```
 
+Generate the Prisma Client (needed whenever schema is changed):
+
+```bash
+$ npx prisma generate
+```
+
+Apply database migrations (creates tables in your dev database):
+
+```bash
+$ npx prisma migrate dev --name init
+```
+
+Note: migrations already exist in prisma/migrations/, so Prisma will apply them to your current database.
+If you need a fresh database, remove Docker volumes and rerun migrations(ONLY IN DEV/TEST).
+
 ## Compile and run the project
 
 ```bash
