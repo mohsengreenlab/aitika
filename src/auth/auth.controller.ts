@@ -3,7 +3,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
-import { ErrorResponseDto } from 'src/shared/dtos/error-response.dto';
+import { ErrorResponseDto } from 'src/common/dtos/error-response.dto';
 import { ExposeUserDto } from './dtos/expose-user.dto';
 
 @ApiTags('auth')
