@@ -37,7 +37,10 @@ async function bootstrap() {
     .setTitle('Aitika API')
     .setDescription('Aitika NestJS backend API')
     .setVersion('1.0')
-    // .addBearerAuth() // Optional JWT auth
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'jwt',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
