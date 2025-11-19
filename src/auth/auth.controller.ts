@@ -24,7 +24,9 @@ import { RotateRefreshResponseDto } from './dtos/refresh-response.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  // ------------------------
+  // Register
+  // ------------------------
   @Post('register')
   @ApiResponse({
     status: 201,
@@ -50,6 +52,9 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  // ------------------------
+  // Login
+  // ------------------------
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
@@ -71,6 +76,9 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
+  // ------------------------
+  // Refresh
+  // ------------------------
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
@@ -88,10 +96,13 @@ export class AuthController {
     description: 'Validation error',
     type: ErrorResponseDto,
   })
-  rotateRefresh(dto: RotateRefreshDto) {
+  rotateRefresh(@Body() dto: RotateRefreshDto) {
     return this.authService.rotateRefresh(dto.refreshToken);
   }
 
+  // ------------------------
+  // Me
+  // ------------------------
   @Get('me')
   @ApiBearerAuth('jwt')
   @UseGuards(JwtAuthGuard)

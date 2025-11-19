@@ -33,6 +33,7 @@ export class AuthService {
       },
       omit: {
         password: true,
+        hashedRefreshToken: true,
       },
     });
 
@@ -48,7 +49,9 @@ export class AuthService {
 
     const accessToken = await this.generateAccessToken(user.id);
     const refreshToken = await this.generateRefreshToken(user.id);
-    const { password, ...safe } = user;
+    // Store new hashed refresh token
+    await this.storeRefreshToken(user.id, refreshToken);
+    const { password, hashedRefreshToken, ...safe } = user;
 
     return {
       accessToken,
@@ -57,8 +60,41 @@ export class AuthService {
     };
   }
 
-  async rotateRefresh(old: string) {
-    // TODO:
+  async rotateRefresh(oldRefreshToken: string) {
+    // Decode and verify refresh token
+    let payload: any;
+    try {
+      payload = await this.jwtService.verifyAsync(oldRefreshToken, {
+        secret: this.cfg.get('JWT_REFRESH_SECRET'),
+      });
+    } catch (err) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+    if (!user || !user.hashedRefreshToken)
+      throw new UnauthorizedException('Invalid refresh token');
+
+    // Compare old refresh token with stored hashed token
+    const isValid = await bcrypt.compare(
+      oldRefreshToken,
+      user.hashedRefreshToken,
+    );
+    if (!isValid) throw new UnauthorizedException('Invalid refresh token');
+
+    // Generate new tokens
+    const newAccessToken = await this.generateAccessToken(user.id);
+    const newRefreshToken = await this.generateRefreshToken(user.id);
+
+    // Store new hashed refresh token
+    await this.storeRefreshToken(user.id, newRefreshToken);
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 
   // TODO: Add Role, Permissions, Level, etc
@@ -78,11 +114,22 @@ export class AuthService {
     return this.jwtService.signAsync(payload, { secret, expiresIn });
   }
 
+  // ------------------------
+  // TODO: userService
+  // ------------------------
   async findUserByEmail(email: string) {
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
 
     return user;
+  }
+
+  async storeRefreshToken(userId: number, newToken: string) {
+    const hashed = await bcrypt.hash(newToken, 10);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { hashedRefreshToken: hashed },
+    });
   }
 }
