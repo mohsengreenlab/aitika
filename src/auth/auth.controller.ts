@@ -41,7 +41,7 @@ export class AuthController {
 
   @Post('login')
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Successful login',
     type: LoginResponseDto,
   })
