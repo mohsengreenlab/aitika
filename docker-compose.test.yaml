@@ -2,19 +2,17 @@ name: 'aitika_api_test'
 
 services:
   postgres:
-    image: postgres
+    image: postgres:17
     container_name: postgres_test
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PW}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - '${DB_PORT:-5432}:5432'
 
   # redis:
   #   image: redis
   #   container_name: redis_test
   #   ports:
   #     - '${REDIS_PORT}:6379'
-
-
