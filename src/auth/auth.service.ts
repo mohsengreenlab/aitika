@@ -9,12 +9,14 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dtos/register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDto } from './dtos/login.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly cfg: ConfigService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -44,15 +46,32 @@ export class AuthService {
     const match = await bcrypt.compare(dto.password, user.password);
     if (!match) throw new UnauthorizedException('Invalid credentials');
 
-    // TODO: Add Role, Permissions, Level, etc
-    const payload = { sub: user.id, email: user.email };
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.generateAccessToken(user.id);
+    const refreshToken = await this.generateRefreshToken(user.id);
     const { password, ...safe } = user;
 
     return {
       accessToken,
+      refreshToken,
       user: safe,
     };
+  }
+
+  // TODO: Add Role, Permissions, Level, etc
+  async generateAccessToken(userId: number) {
+    const payload = { sub: userId };
+    const secret = this.cfg.get('JWT_SECRET');
+    const expiresIn = this.cfg.get('JWT_EXPIRES_IN');
+
+    return this.jwtService.signAsync(payload, { secret, expiresIn });
+  }
+
+  async generateRefreshToken(userId: number) {
+    const payload = { sub: userId };
+    const secret = this.cfg.get('JWT_REFRESH_SECRET');
+    const expiresIn = this.cfg.get('JWT_REFRESH_EXPIRES_IN');
+
+    return this.jwtService.signAsync(payload, { secret, expiresIn });
   }
 
   async findUserByEmail(email: string) {
