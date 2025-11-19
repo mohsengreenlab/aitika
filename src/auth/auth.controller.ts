@@ -17,6 +17,8 @@ import { ExposeUserDto } from './dtos/expose-user.dto';
 import { LoginResponseDto } from './dtos/login-response.dto';
 import { LoginDto } from './dtos/login.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RotateRefreshDto } from './dtos/refresh.dto';
+import { RotateRefreshResponseDto } from './dtos/refresh-response.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -67,6 +69,27 @@ export class AuthController {
   })
   async login(@Body() dto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(dto);
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 200,
+    description: 'Successful Refresh',
+    type: RotateRefreshResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+    type: ErrorResponseDto,
+  })
+  rotateRefresh(dto: RotateRefreshDto) {
+    return this.authService.rotateRefresh(dto.refreshToken);
   }
 
   @Get('me')

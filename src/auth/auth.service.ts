@@ -57,6 +57,10 @@ export class AuthService {
     };
   }
 
+  async rotateRefresh(old: string) {
+    // TODO:
+  }
+
   // TODO: Add Role, Permissions, Level, etc
   async generateAccessToken(userId: number) {
     const payload = { sub: userId };
