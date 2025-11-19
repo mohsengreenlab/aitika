@@ -6,6 +6,7 @@ import {
   UseGuards,
   Req,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -48,7 +49,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 200,
     description: 'Successful login',
