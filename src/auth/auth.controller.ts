@@ -1,0 +1,123 @@
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dtos/register.dto';
+import { ErrorResponseDto } from 'src/common/dtos/error-response.dto';
+import { ExposeUserDto } from './dtos/expose-user.dto';
+import { LoginResponseDto } from './dtos/login-response.dto';
+import { LoginDto } from './dtos/login.dto';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RotateRefreshDto } from './dtos/refresh.dto';
+import { RotateRefreshResponseDto } from './dtos/refresh-response.dto';
+
+@ApiTags('auth')
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+  // ------------------------
+  // Register
+  // ------------------------
+  @Post('register')
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully registered.',
+    type: ExposeUserDto,
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Email already exists.',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation Error',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    type: ErrorResponseDto,
+  })
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
+
+  // ------------------------
+  // Login
+  // ------------------------
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 200,
+    description: 'Successful login',
+    type: LoginResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+    type: ErrorResponseDto,
+  })
+  async login(@Body() dto: LoginDto): Promise<LoginResponseDto> {
+    return this.authService.login(dto);
+  }
+
+  // ------------------------
+  // Refresh
+  // ------------------------
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 200,
+    description: 'Successful Refresh',
+    type: RotateRefreshResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+    type: ErrorResponseDto,
+  })
+  rotateRefresh(@Body() dto: RotateRefreshDto) {
+    return this.authService.rotateRefresh(dto.refreshToken);
+  }
+
+  // ------------------------
+  // Me
+  // ------------------------
+  @Get('me')
+  @ApiBearerAuth('jwt')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'Current user',
+    type: ExposeUserDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
+  getMe(@Req() req: any) {
+    // Passport attaches user to request from JwtStrategy validate()
+    return req.user;
+  }
+}
